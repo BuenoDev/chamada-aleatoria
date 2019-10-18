@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rand</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="container">
+            <div class="row" style="margin-bottom: 100px;">
+                <div class="col s12 m6 offset-m2">
+                    <h4>
+                        Seleção aleatoria de Participantes
+                    </h4>
+                    <small>
+                        Por Gustavo Bueno
+                    </small>
+                    <br>
+                    <a class="waves-effect waves-light btn-small blue" @click="cadastro = true"
+                        style="margin-right: 30px">
+                        Cadastro
+                    </a>
+                    <a class="waves-effect waves-light btn-small orange" @click="cadastro = false">
+                        Escolher
+                    </a>
+                </div>
+            </div>
+            <div class="row" v-if="cadastro">
+                <div class="col s4 m5 offset-m1">
+                    <div>
+                        <form @submit.prevent="pushName">
+                            <label for="">Nome</label>
+                            <input type="text" v-model="name">
+                            <button class="btn waves-effect waves-light btn-large" type="submit" name="action">
+                                Cadastrar Participante
+                            </button>
+                        </form>
+                    </div>
+
+
+                </div>
+                <div class="col m4 s12 offset-m1">
+                    <h6>
+                        clique no nome para excluir
+                    </h6>
+                    <ol style="overflow-y: scroll; max-height: 250px;">
+                        <li v-for="(name, index) in names" :key="index" @click="remover(index)">
+                            {{ name }}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row" v-if="!cadastro">
+                <div class="col m6 offset-m2">
+                    <h1>
+                        {{ chosen }}
+                    </h1>
+                    <button class="btn waves-effect waves-light btn-large" name="action" @click="escolher">
+                        Escolher participante
+                    </button>
+                    <button class="btn red waves-effect waves-light btn-large" name="action" @click="removerEscolhido">
+                        Remover e Escolher
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            name: 'app',
+            data() {
+                return {
+                    names: [],
+                    name: '',
+                    escolhido: '',
+                    num: '',
+                    cadastro: true,
+                }
+            },
+            computed: {
+                chosen(){
+                    return this.escolhido === '' ? '' : this.num + ' - ' + this.escolhido
+                }
+            },
+            methods: {
+                pushName() {
+                    if(this.name === '') alert('Digite o nome')
+                    else {
+                        this.names.push(this.name);
+                        this.name = '';
+                    }
+                },
+                escolher() {
+                    if (this.names.length === 0) alert("Adicione algum participante na lista")
+                    else {
+                        let interval = setInterval(() => {
+                            this.num = parseInt(Math.random() * this.names.length)
+                            this.escolhido = this.names[this.num]
+                        }, 50)
+                        setTimeout(() => {
+                            clearInterval(interval)
+                        }, 2000)
+                    }
+                },
+                remover(index) {
+                    this.names.splice(index, 1)
+                },
+                removerEscolhido() {
+                    this.names.splice(this.num, 1)
+                    this.escolher()
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
